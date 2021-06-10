@@ -1,22 +1,31 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from "react";
 import './App.css';
 
+
 function App() {
+  const [count, setCount] = useState([]);
+  const [search, setSearch] = useState("");
+
+  function getTheJokes() {
+    return fetch(`https://icanhazdadjoke.com/search?limit=10&term='${search}'`,{headers: {
+      'Accept': 'application/json'}})
+      .then((response) => response.json())
+      .then((data) => setCount(data.results)); 
+}
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <div>
+          <h1>Our top picks for the day</h1>
+          <div className="jokes">display jokes here </div>
+          <input type="text" placeholder="What's the magic word?" onChange={event => setSearch(event.target.value)}></input>
+          <button className="fetch-button" onClick={getTheJokes}>Fetch it!!!!</button>
+          {count.map((joke,index)=> (
+            <div className="Jokes" key={index}>
+            <p>{joke.joke}</p>
+            </div>
+          ))}
+        </div>
       </header>
     </div>
   );
